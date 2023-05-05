@@ -1,0 +1,38 @@
+﻿@model ReasonTogetherForum.Models.Forum.AddForumModel
+
+<div class="container body-content">
+    <div class="row sectionHeader">
+        <div class="sectionHeading">
+            Create New Topic
+        </div>
+    </div>
+    <div class="row">
+        <div class="createForumSection">
+            <form asp-controller="Forum" asp-action="AddForum" method="post" id="createForumForm" enctype="multipart/form-data">               
+                <div class="form-group">
+                    <label asp-for="Title">Topic Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Choose topic title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description">Topic Description</label>
+                    <input asp-for="Description" rows="1" class="form-control" placeholder="Write a brief description here.">
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div id="upload" style="margin-bottom: 5px;">
+                    <label>Upload Topic Image</label>
+                    <br />
+                    <label class="btn btn-default btn-file">
+                        Browse <input asp-for="ImageUpload" id="txtForumImage" type="file" style="display: none;">
+                    </label>
+                </div>
+                <button type="submit" id="registerBtn" class="btn btn-submitPost" onclick="checkFile('CreateTopic')">Create Topic</button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

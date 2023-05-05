@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model ReasonTogetherForum.Models.ApplicationUser.ProfileModel
+@inject UserManager<ReasonTogetherForum.Data.ApplicationUser> UserManager
+
+<div class="container body-content">
+	<div class="row sectionHeader">
+		<div class="sectionHeading">
+			User Profile
+		</div>
+		<!--You could have an isActive property on ApplicationUser 
+			and use it to deactivate Users if necessary. Have a disable User
+			button here. Like forum moderators and standard users.
+			@if (User.IsInRole("Admin"))
+		    {			
+				<button>Deactivate User</button>
+		    }
+		-->
+	</div>
+	<div class="row userProfile">
+		<div class="col-md-4">
+			<div class="profile-image-container">
+				<img src="@Model.ProfileImageUrl" alt="Profile Image" height="300" width="300" />
+			</div>			
+			@if (User.Identity.Name == Model.UserName)
+			{
+				<form method="post" id="uploadForm" enctype="multipart/form-data" asp-controller="Profile" asp-action="UploadProfileImage">
+					<div id="upload" style="text-align:left;">
+						<label class="btn btn-default btn-file">
+							Browse <input type="file" id="txtFile" name="file" style="display:none;" />
+						</label>
+						<br>
+						<button type="submit" id="btn-profile" onclick="checkFile('Profile')" class="btn-profile-submit">
+							Submit
+					    </button>
+					</div>
+				</form>
+			}
+		</div>
+		<div class="col-md-8">
+			<span id="userName">@Model.UserName</span>
+			@if (@Model.IsAdmin)
+			{
+				<span class="isAdmin">Admin</span>
+			}
+			<span id="userRating">Current Rating: @Model.UserRating</span>
+			<span id="userEmailLabel">Email: @Model.Email</span>
+			<span id="userCreatedLabel">Member Since: @Model.MemberSince</span>			
+		</div>
+	</div>
+</div>

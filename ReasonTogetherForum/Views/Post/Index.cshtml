@@ -1,0 +1,76 @@
+﻿@model ReasonTogetherForum.Models.Post.PostIndexModel
+
+<div class="container body-content">
+	<div class="row postHeader">
+		<div class="postHeading">
+			<span class="postIndexTitle">
+				@Model.Title
+			</span>
+			<span id="headingBtn"><a asp-controller="Forum" asp-action="Topic" asp-route-id="@Model.ForumId" class="btn btn-back">Back to @Model.ForumName</a></span>
+		</div>
+	</div>
+
+	<div class="row" id="postIndexContent">
+		<div class="col-md-3 postAuthorContainer">
+			<div class="postAuthorImage" style="background-image: url(@Model.AuthorImageUrl); background-size: 100%;"></div>
+			<a asp-controller="Profile" asp-action="Detail" asp-route-id="@Model.AuthorId" style="text-decoration:none;">
+				<strong>@Model.AuthorName</strong>				
+			</a> 
+			@if (@Model.IsAuthorAdmin)
+			{				
+				<span class="isAdmin smaller">Admin</span>
+			}
+			(<span class="postAuthorRating">@Model.AuthorRating</span>)			
+			<br />
+			<span class="postDate">@Model.Created</span>		
+		</div>
+		<div class="col-md-9 postContentContainer">
+			<div>
+				@Html.Raw(@Model.PostContent)
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="replyDivider"></div>
+	@if (User.Identity.IsAuthenticated)
+	{
+		<div class="row" id="postReplyRow">
+			<span style="padding:0;"><a asp-controller="Reply" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-newReply">Post Reply</a></span>			
+		</div>
+		<div class="row" id="replyDivider"></div>
+	}
+	@if (Model.Replies.Any())
+	{
+		foreach (var reply in Model.Replies)
+		{
+			<div class="row" id="postIndexContent">
+				<div class="col-md-3 replyAuthorContainer">
+					<div class="postAuthorImage" style="background-image: url(@reply.AuthorImageUrl); background-size: 100%;"></div>
+					<a asp-controller="Profile" asp-action="Detail" asp-route-id="@reply.AuthorId" style="text-decoration:none;">
+						<strong>@reply.AuthorName</strong>
+					</a> 
+					@if (@reply.IsAuthorAdmin)
+					{
+						<div class="isAdmin profileLabel smaller">Admin</div>
+					}
+							(<span class="postAuthorRating">@reply.AuthorRating</span>)
+					<br />
+					<span class="postDate">@reply.Created</span>
+				</div>				
+				<div class="col-md-9 replyContentContainer">
+					<div>
+						@Html.Raw(@reply.ReplyContent)
+					</div>
+				</div>
+			</div>
+		}
+	}
+	else
+	{
+		<div class="noPosts">
+			<h3>
+				There are no replies to this post.<br />
+			</h3>
+		</div>
+	}
+</div>

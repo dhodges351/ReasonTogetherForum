@@ -1,0 +1,63 @@
+﻿@model ReasonTogetherForum.Models.ApplicationUser.ProfileListModel
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<style>
+    div.mvc-grid.mvc-grid-header-mode {
+        padding: 0;
+        margin: 0;
+    }
+
+    div.mvc-grid-table table tr:hover td {
+        background-color: #E4F0FD;
+    }
+
+    div.mvc-grid-table table td {
+        border: none !important;
+        border-bottom: solid 1px #eee !important;
+        margin: 0 !important;
+        padding: 5px;
+        text-align: left !important;
+        vertical-align: top !important;
+        background-color: #fff;
+    }
+</style>
+<div class="container body-content">
+	<div class="row sectionHeader">
+		<div class="sectionHeading">Browse Users</div>		
+	</div>
+	<div class="row" id="forumIndexContent">
+		@if (Model.Profiles != null && Model.Profiles.Any())
+		{
+			@(
+				Html
+				.Grid(Model.Profiles)
+				.Build(columns =>
+				{
+					columns.Add(model => @Html.Raw($"<img src='{model.ProfileImageUrl}' alt='profile image' height=75 width=75></img>")).Titled("Image").Width(100);
+					columns.Add(model => @Html.Raw(model.UserName)).Titled("User Name");
+					columns.Add(model => @Html.Raw(model.Email)).Titled("Email");
+					columns.Add(model => @Html.Raw(model.MemberSince)).Titled("Member Since");
+					columns.Add(model => @Html.Raw(model.UserRating)).Titled("Rating");
+					columns.Add(Model => Model.UserId).Hidden();
+				})
+				.Filterable(GridFilterCase.Lower)
+				.Using(GridFilterMode.Header)
+				.Empty("No data found")
+				.Pageable(pager =>
+				{
+					pager.RowsPerPage = 4;
+				})
+				.Sortable()
+				)
+		}		
+	</div>	
+</div>
+<script>
+    $(document).ready(function () {
+        $("tr").click(function () {
+            var row = $(this);
+            var profileId = row[0].cells[5].innerText;
+            window.location = "/Profile/Detail?id=" + profileId;
+        });
+    });
+</script>

@@ -1,0 +1,103 @@
+﻿@model ReasonTogetherForum.Models.Forum.ForumIndexModel
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<style>
+    div.mvc-grid.mvc-grid-excel-mode {
+        padding: 0;
+        margin: 0;
+    }    
+
+    tr.mvc-grid-headers th {
+        display: none;
+    }
+
+    div.mvc-grid-table table tr:hover td {
+        background-color: #E4F0FD;
+    }
+
+    div.mvc-grid-table table td {
+        border: none !important;
+        border-bottom: solid 1px #eee !important;
+        margin: 0 !important;
+        padding: 5px;
+        text-align: left !important;
+        vertical-align: top !important;   
+        background-color: #fff;
+    }
+
+    div.mvc-grid-table table td:nth-child(2) {
+        color: #0d98ba;
+        font-weight: 600;
+        width: 100px;
+    }
+
+    div.mvc-grid-table table td:nth-child(3) {
+        font-family: 'Roboto Mono';
+        color:darkgray;
+        font-size: 0.8em;
+        width: 100px;
+        font-weight: 600;
+    }    
+
+    #spanHot {
+        padding: 2px 5px 2px 5px;        
+        background-color: #fe552f;
+        color: #fff;        
+        border-radius: 2px;           
+    }
+</style>
+<div class="container body-content">
+    <div class="row sectionHeader">
+        <div class="sectionHeading">Browse Topics</div>
+        <div class="sectionDescription">
+            <p>Welcome to the <strong>Reason Together Forum community</strong>. Posts are broadly categorized into separate topics by question or area of interest.</p>
+            <p>
+                Please read the Forum Guidelines before creating a new post.
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <span>You must be a <a asp-controller="Account" asp-action="Register">registered member</a> to create a new post.</span>
+                }
+            </p>
+        </div>
+    </div>
+    <div class="row" id="forumIndexContent">
+        @if (Model.ForumList.Any())
+        {
+            @(
+            Html
+            .Grid(Model.ForumList)
+            .Build(columns =>
+            {
+                columns.Add(model => @Html.Raw($"<img src='{model.ImageUrl}' alt='topic image' height=50 width=50></img>")).Width(50).Css("topic-image-cell");                      
+                columns.Add(model => @Html.Raw($"{(model.HasRecentPost ? model.Name + "<br /><span id='spanHot'>Hot</span>" : model.Name)}"));
+                columns.Add(model => @Html.Raw($"{(model.NumberOfPosts == 1 ? model.NumberOfPosts + " Post" + "<br />" : model.NumberOfPosts + " Posts" + "<br />")}{(model.NumberOfUsers == 1 ? model.NumberOfUsers + " User" : model.NumberOfUsers + " Users")}"));
+                columns.Add(model => @Html.Raw(model.Description));
+                columns.Add(model => @Html.Raw(model.Id)).Hidden();
+            })
+            .Empty("No data found")
+            .Pageable(pager =>
+            {
+                pager.RowsPerPage = 6;
+            })
+            )
+        }
+        else
+        {
+            <div class="noPosts">
+                <i class="material-icons md-72">question_answer</i>
+                <h3>
+                    No Topics have been created yet. <br />
+                </h3>
+            </div>
+        }        
+    </div>
+</div>
+<script>
+    $(document).ready(function() {        
+        $("tr").click(function () {
+            var row = $(this);
+            var forumId = row[0].cells[4].innerText;
+            window.location = "/Forum/Topic/" + forumId;
+        });    
+    });
+</script>

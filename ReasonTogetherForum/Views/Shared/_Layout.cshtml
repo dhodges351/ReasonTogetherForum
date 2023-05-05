@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Reason Together Forum</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/ReasonTogetherForum.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark navbar-default border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a href="/Home/Index"><img src="~/images/reasontogetherlogo.png" style="width:35px;height:35px;" /></a>
+				<a class="navbar-brand text-dark" asp-controller="Home" asp-action="Index">Reason Together Forum</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="navbarResponsive">
+                    <ul class="navbar-nav flex-grow-1">                        
+                        <li class="nav-item nav-item-main">
+                            <a class="nav-link js-scroll-trigger text-dark" asp-controller="Forum" asp-action="Index">Topics</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <breadcrumb></breadcrumb>
+            @RenderBody()
+        </main>
+    </div>
+    <div style="height:50px;">&nbsp;</div>   
+    <footer class="border-top footer navbar-default text-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    &copy; 2023 - Reason Together Forum
+                </div>
+                <div class="col-md-6" style="text-align:right; font-size:x-small;">
+                    <a href="https://freeicons.io/essential-web-2/user-add-plus-create-admin-icon-40278" alt="Admin">Free Admin Icon</a>
+                    <a href="https://freeicons.io/search/icons?q=React&type=popular&price_type=free&style=all" alt="free icons">Free React Icon</a>
+                </div>
+            </div>      
+        </div>         
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.querySelectorAll(".mvc-grid").forEach(element => new MvcGrid(element));
+    </script>
+    <script>
+        var fileSize = 0;
+        var filePath = '';
+
+        // Allowed file types
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        function checkFile(page) {
+            event.preventDefault();
+
+            if (filePath == "") {
+                alert("Please select an image file.");
+                return false;
+            }
+
+            if (fileSize > 1) {
+                alert("File must be less than or equal to 1000KB.");
+                return false;
+            }
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Invalid file type, valid file types are: jpg, jpeg, png, gif.');
+                $("#txtFile").val("");
+                return false;
+            }
+
+            if (page == 'Profile')
+            {
+                $("#uploadForm").submit();
+            }
+            else if (page == 'CreateTopic') {
+                $("#createForumForm").submit();
+            }            
+        }
+
+        $('#txtFile').on('change', function () {
+            fileSize = (this.files[0].size / 1024 / 1024).toFixed(2);
+            filePath = $("#txtFile").val();
+        });
+
+        $('#txtForumImage').on('change', function () {
+            fileSize = (this.files[0].size / 1024 / 1024).toFixed(2);
+            filePath = $("#txtForumImage").val();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

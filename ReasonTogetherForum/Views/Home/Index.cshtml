@@ -1,0 +1,90 @@
+﻿@model ReasonTogetherForum.Models.Home.HomeIndexModel
+
+
+<div class="container body-content">
+    <div class="row frontPageSplash">
+        <div class="col-md-6 frontPageLearn">
+            <div class="frontPageHeading">Ask, Share, Learn</div>
+            <p class="frontPageSubHeading">
+                Reason Together Forum is a Forum for Asking Questions and Sharing
+                Ideas and Knowledge About Various Topics.
+            </p>
+            <div>
+                <form asp-controller="Search" asp-action="Search" method="post" role="form" id="homeSearchForm">
+                    <input asp-for="SearchQuery" id="txtSearch" type="text" class="homeSearch" placeholder="Search..." onfocus="clearThis(this)" />
+                    <button type="submit" class="btn btn-forumSearch-home" onclick="return checkEntry()">
+                        <i class="material-icons">search</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <div class="row frontPageContent">
+        Latest Posts
+        <div class="row divider-row"></div>
+        <div class="frontPageTable">
+            <table class="table table-bordered table-hover" id="latestPostsTable">
+                <tbody>
+                    @foreach (var post in Model.LatestPosts)
+                    {
+                        <tr>
+                            <td>
+                                <div class="forumLogo" style="background-image: url(@post.ForumImageUrl);"></div>
+                                <div class="postTitle">
+                                    <a class="noUnderline" asp-controller="Post" asp-action="Index" asp-route-id="@post.Id">
+                                        @post.Title
+                                    </a>
+                                </div>
+                                <div class="postSubTitle">
+                                    @if (@post.RepliesCount == 1)
+                                    {
+                                        <span>@post.RepliesCount Reply</span>
+                                    }
+                                    @if (@post.RepliesCount == 0)
+                                    {
+                                        <span>No Replies</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@post.RepliesCount Replies</span>
+                                    }
+                                | <span class="postUser">
+                                    <a class="noUnderline" asp-controller="Profile" asp-action="Detail" asp-route-id="@post.AuthorId">@post.AuthorName</a>
+                                    </span> (@post.AuthorRating) 
+                                    created 
+                                    <span class="postForum">
+                                        <a asp-controller="Forum" asp-action="Topic" asp-route-id="@post.ForumId"></a>
+                                        @post.ForumName
+                                    </span> on 
+                                    <span class="postDate">
+                                        @post.DatePosted
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>        
+    </div>
+</div>
+<script>
+    function checkEntry()
+    {        
+        var searchVal = $("#txtSearch").val();
+        if (searchVal == "")
+        {
+            return false;
+        }
+        else
+        {
+            $("#homeSearchForm").submit;
+        }
+    }
+
+     function clearThis(target) {
+            target.value = "";
+        }
+</script>

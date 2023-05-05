@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ReasonTogetherForum.Data
+@using ReasonTogetherForum.Services;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
+@{
+    ViewBag.Context = _context;
+    var data = ViewBag.Context as ApplicationDbContext;
+    var appUser = data?.Users.Where(x => x.UserName == UserManager.GetUserName(User)).FirstOrDefault();
+    var appUserId = appUser?.Id;
+}
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item nav-item-main">
+            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index"
+           title="Welcome">Welcome @UserManager.GetUserName(User)!</a>
+        </li>     
+       
+        @if (User.IsInRole("Admin"))
+        {
+           <li class="dropdown">
+                <a href="#" class="nav-link text-dark dropdown-toggle account-nav-item admin-btn" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                <ul class="dropdown-menu">
+                    <li role="separator" class="divider"></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Profile" asp-action="Detail" asp-route-id="@appUserId">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Forum" asp-action="Create">Create Topic</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">View Users</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item account-nav-item">
+            <form class="form-inline" asp-controller="Account" asp-action="Logout">
+                    <button type="submit" class="btn text-dark admin-btn">Sign Out</button>
+            </form>
+        </li>
+        }
+        else
+        {
+            <li class="nav-item nav-item-main">
+                <a class="nav-link text-dark" asp-controller="Profile" asp-action="Detail" asp-route-id="@appUserId">Profile</a>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" asp-controller="Account" asp-action="Logout">
+                    <button type="submit" class="btn text-dark non-admin-btn">Sign Out</button>
+                </form>
+            </li>
+        }      
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Sign In</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+    }
+</ul>

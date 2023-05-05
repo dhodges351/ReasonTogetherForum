@@ -1,0 +1,112 @@
+﻿@model ReasonTogetherForum.Models.Forum.ForumTopicModel
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<style>
+    div.mvc-grid.mvc-grid-header-mode {
+        padding: 0;
+        margin: 0;
+    }
+
+    div.mvc-grid-table table tr:hover td {
+        background-color: #E4F0FD;
+    }
+
+    div.mvc-grid-table table td {
+        border: none !important;
+        border-bottom: solid 1px #eee !important;
+        margin: 0 !important;
+        padding: 5px;
+        text-align: left !important;
+        vertical-align: top !important;
+        background-color: #fff;
+    }
+</style>
+<div class="container body-content">
+    <div class="row sectionHeader">
+        <div class="sectionHeading">
+            <span id="results">@Model.Forum.Name</span>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span id="headingBtn"><a asp-controller="Post" asp-action="Create" asp-route-id="@Model.Forum.Id" class="btn btn-newPost">Create Post</a></span>
+            }
+            <form asp-controller="Forum" asp-action="Search" method="post">
+                <div class="searchForm">
+                    <input asp-for="SearchQuery" type="text" placeholder="Search..." onfocus="clearThis(this)" style="width:300px;">
+                    <button type="submit" class="btn btn-forumSearch">
+                        <i class="material-icons">search</i>
+                    </button>
+                </div>
+                <input asp-for="Forum.Id" name="id" type="hidden" />
+            </form>
+        </div>
+        <div class="sectionDescription">
+            <div class="forumLogo" style="background-image: url(@Model.Forum.ImageUrl); background-size:100%"></div>
+            <p>Welcome to the <strong>@Model.Forum.Name</strong> topic. Please keep posts friendly and on-topic.</p>
+            <p>
+                Please read the Topic Guidelines before creating a new post.
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <span>You must be a <a asp-controller="Account" asp-action="Register">registered member</a> to create a new post.</span>
+                }
+            </p>
+        </div>
+    </div>
+    <div class="row" id="forumIndexContent">        
+        @if (Model.Posts.Any() && string.IsNullOrEmpty(Model.SearchQuery))
+        {            
+            @(
+                Html
+                .Grid(Model.Posts)
+                .Build(columns =>
+                {
+                    columns.Add(model => @Html.Raw(model.Title)).Titled("Title");
+                    columns.Add(model => @Html.Raw(model.AuthorNameRatingLink)).Titled("Author/Rating");
+                    columns.Add(model => @Html.Raw(model.DatePosted)).Titled("Date Posted");
+				    columns.Add(model => @Html.Raw(model.RepliesCount)).Titled("Replies");
+                    columns.Add(model => model.Id).Hidden();
+		        })		        
+		        .Empty("No data found")
+		        .Pageable(pager =>
+		        {
+			        pager.RowsPerPage = 6;
+		        })
+	        )
+        }
+        else if (!string.IsNullOrEmpty(Model.SearchQuery) && Model.EmptySearchResults)
+        {
+            <div class="noPosts">
+                <h4>
+                    No search results for "@Model.SearchQuery".
+                </h4>
+            </div>
+        }
+        else
+        {
+            <div class="noPosts">
+                <i class="material-icons md-72">question_answer</i>
+                <h3>
+                    It looks like there are no @Model.Forum.Name posts yet. <br />
+                    Why not <a asp-controller="Post" asp-action="Create" asp-route-id="@Model.Forum.Id"><span>Create One?</span></a>
+                </h3>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function clearThis(target) {
+            target.value = "";
+        }
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        $("tr").click(function () {
+            var row = $(this);
+            var postId = row[0].cells[4].innerText;
+            window.location = "/Post/Index/" + postId;
+        });
+    });
+</script>

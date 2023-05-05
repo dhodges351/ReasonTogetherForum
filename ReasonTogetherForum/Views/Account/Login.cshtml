@@ -1,0 +1,59 @@
+﻿@model ReasonTogetherForum.Models.Account.UserLoginModel
+
+<h1>Login</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Account" asp-action="Login" method="post" role="form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>          
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div> 
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input id="txtPassword" asp-for="Password" class="form-control" />
+                <i class="bi bi-eye-slash" id="show_password" onclick="togglePassword(this)">
+                    Show
+                </i>
+                <span asp-validation-for="Password" class="text-danger"></span>                
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
+                </label>
+            </div>
+            <div class="form-group">
+                <a asp-action="ForgotPassword">Forgot Password</a>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Log in" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function togglePassword(el)
+        { 
+            var attrType = $('#txtPassword').attr('type');
+            if (attrType == "password")
+            {
+                $('#txtPassword').attr('type', 'text');
+                $('#show_password').removeClass('bi bi-eye-slash');
+                $('#show_password').addClass('bi bi-eye');
+                $('#show_password').html(' Hide');
+            }
+            else
+            {
+                $('#txtPassword').attr('type', 'password');
+                $('#show_password').removeClass('bi bi-eye');
+                $('#show_password').addClass('bi bi-eye-slash');
+                $('#show_password').html(' Show');
+            }
+        }
+    </script>  
+}

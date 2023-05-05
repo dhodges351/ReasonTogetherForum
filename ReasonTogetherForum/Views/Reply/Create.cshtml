@@ -1,0 +1,58 @@
+﻿@model ReasonTogetherForum.Models.Reply.PostReplyModel
+
+<div class="container body-content">
+	<div class="row sectionHeader">
+		<div class="sectionHeading">
+			Reply | @Model.PostTitle
+		</div>		
+		<div class="col-md-6">
+			<img class="forumLogo" src="@Model.ForumImageUrl" alt="forum logo"/>
+		</div>
+		<div class="col-md-6" style="text-align:right;">
+			<span>
+				<a asp-controller="Post" asp-action="Index" asp-route-id="@Model.PostId" class="btn btn-back">Back to Post</a>
+			</span>
+		</div>
+	</div>
+	<div class="row" id="postIndexContent">
+		<div id="originalPost">
+			<h3>
+				@Model.PostTitle
+				</h3>
+			<p>
+				@Model.PostContent
+			</p>
+		</div>
+	</div>
+	<br />
+	<div class="row" id="postIndexContent">
+		<div id="createReply">
+			<div class="authorBlock">
+				You're submitting this Reply as @Model.AuthorName.
+			</div>
+			<form asp-controller="Reply" asp-action="AddReply" method="post" id="addPostForm" role="form">
+				<div asp-validation-summary="All" class="text-danger"></div>
+				<div class="formGroup" style="margin-bottom: 5px;">
+					<label asp-for="ReplyContent">Reply: </label>
+					<textarea asp-for="ReplyContent" 
+						rows="10" 
+						class="form-control" 
+						placeholder="Your reply...">
+					</textarea>
+					<span asp-validation-summary="ReplyContent" class="text-danger"></span>
+				</div>				
+				<div style="margin-bottom: 10px;">
+					<input type="submit" id="btnSubmitReply" class="btn btn-submitReply" value="Submit Reply" />
+				</div>
+				<input asp-for="AuthorId" type="hidden" />
+				<input asp-for="PostId" type="hidden" />
+				<input asp-for="ForumId" type="hidden" />				
+			</form>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
