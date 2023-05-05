@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /ReasonTogetherForum/appsettings.Production.json
 /ReasonTogetherForum/appsettings.Development.json
 /ReasonTogetherForum/appsettings.Development.json
+/ReasonTogetherForum/AzureStorageSettings.cs
